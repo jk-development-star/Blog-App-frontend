@@ -1,0 +1,15 @@
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.sticky-header .navbar-nav {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.sticky-header .nav-link {
+  margin-left: 1rem;
+}
