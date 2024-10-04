@@ -8,25 +8,23 @@ const BlogDetails = () => {
   const [blog, setBlog] = useState("");
   const { blogId } = useParams();
   const navigate = useNavigate();
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const authToken = localStorage.getItem('token');
-        const config = {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'application/json',
-          }
-        };
-        const response = await axios.get(`http://localhost:3001/api/v1.0/blogsite/blogs/${blogId}`, config);
-        setBlog(response.data);
-
+        const response = await axios.get(`https://kbri0uc4wj.execute-api.us-east-1.amazonaws.com/dev/fetchblog?id=${blogId}`, config, { withCredentials: true});
+        if(response.data.length > 0 || response.data[0] != null){
+          setBlog(response.data[0]);
+        }
+        
       } catch (error) {
         console.error('Error fetching blog:', error);
         if (error.response && error.response.status === 401) {
           navigate('/');
-        } else {
-          // Handle other errors
         }
       }
     };
@@ -67,13 +65,12 @@ const BlogDetails = () => {
         <Col md={8}>
           <Card className="blog-detail-card">
             <Card.Body>
-              <Card.Title>{blog.name}</Card.Title>
+              <Card.Title>{blog.blog_name}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
-                {blog.category} | {' '}
+                {blog.category} {' '} | {' '}{formatDate(blog.created_on)} {' '} | {' '}
                 <Badge bg="success" className="author-badge">
-                  {blog.user_name}
+                  {blog.author}
                 </Badge>{' '}
-                | {formatDate(blog.createdAt)}
               </Card.Subtitle>
               <Card.Text>{blog.article}</Card.Text>
               <Button variant="primary" onClick={handleBackToList}>

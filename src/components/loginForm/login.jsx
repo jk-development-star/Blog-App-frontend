@@ -14,9 +14,13 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3002/api/v1.0/blogsite/login', { email, password });
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+      const response = await axios.post('https://s37wiuolsj.execute-api.us-east-1.amazonaws.com/dev/api/v1.0/blogsite/login', { email, password }, config, { withCredentials: true});
       const { token, result } = response.data;
-
       if (result) {
         const { user_id, user_name } = result;
         const userData = {

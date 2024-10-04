@@ -5,37 +5,30 @@ import { FaTrashAlt, FaEye } from 'react-icons/fa';
 import './blogList.css';
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
-import { useRef } from 'react';
 import Swal from 'sweetalert2';
 
 const BlogList = () => {
-  const isMounted = useRef(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const authToken = localStorage.getItem('token');
-        const config = {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'application/json',
-          },
-        };
-        const response = await axios.get(`http://localhost:3001/api/v1.0/blogsite/blogs`, config);
-        if (isMounted.current) {
+        const user = localStorage.getItem('user');
+        const response = await axios.get(`https://kbri0uc4wj.execute-api.us-east-1.amazonaws.com/dev/fetchblog`, config, { withCredentials: true});
           if (response.status === 200 && response.data.length > 0) {
             setBlogs(response.data);
             toast.success('Blogs fetched successfully!');
           } else {
             toast.error('No blogs found!');
           }
-        } else {
-          isMounted.current = true;
-        }
       } catch (error) {
         toast.error(error)
       } finally {
@@ -52,7 +45,7 @@ const BlogList = () => {
     setSearchTerm(e.target.value);
   };
 
-
+console.log('blogs',blogs)
   const filteredBlogs = blogs ? blogs.filter((blog) =>
     blog.category.toLowerCase().includes(searchTerm.toLowerCase())
   ) : [];
@@ -75,14 +68,9 @@ const BlogList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         try {
-          const authToken = localStorage.getItem('token');
-          const config = {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              'Content-Type': 'application/json',
-            },
-          };
-          axios.delete(`http://localhost:3001/api/v1.0/blogsite/blogs/${blogId}`, config)
+          const user = localStorage.getItem('user');
+        
+          axios.delete(`https://kbri0uc4wj.execute-api.us-east-1.amazonaws.com/dev/deleteblog?id=${blogId}`, config, { withCredentials: true})
             .then((response) => {
               if (response.status === 200) {
                 Swal.fire('Deleted!', 'The blog has been deleted.', 'success');
@@ -151,14 +139,9 @@ const BlogList = () => {
                 <Col md={6} key={blog._id}>
                   <Card className="mb-4">
                     <Card.Body>
-                      <Card.Title>{truncateText(blog.name, 40)}</Card.Title>
+                      <Card.Title>{truncateText(blog.blog_name, 40)}</Card.Title>
                       <Card.Subtitle className="mb-2 text-muted">
-                        {blog.category}
-                        <br />
-                        {' '} <Badge bg="success" className="author-badge">
-                          {blog.user_name}
-                        </Badge> {' '} |
-                        {' '}{formatDate(blog.createdAt)}
+                        {blog.category}{' '}|{' '}{formatDate(blog.created_on)}
                       </Card.Subtitle>
                       <Card.Text>{truncateText(blog.article, 100)}</Card.Text>
                       <div className="blog-actions">
