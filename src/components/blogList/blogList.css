@@ -45,3 +45,10 @@
 .blog-action-icon:hover {
   color: #343a40;
 }
+
+.loading-indicator {
+  position: "fixed";
+  top: "50%";
+  left: "50%";
+  transform: "translate(-50%, -50%)"
+}

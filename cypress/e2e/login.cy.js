@@ -10,7 +10,7 @@ describe('Login', () => {
   });
 
   it('should login with valid credentials', () => {
-    cy.get('input[name="email"]').type('abc@email.com');
+    cy.get('input[name="email"]').type('jack12@email.com');
     cy.get('input[name="password"]').type('Password123');
     cy.get('button[type="submit"]').click();
     cy.url().should('include', '/blog-list');
