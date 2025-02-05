@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const BlogDetails = () => {
   const [blog, setBlog] = useState("");
-  const { blogId } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const config = {
     headers: {
@@ -16,9 +16,9 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://kbri0uc4wj.execute-api.us-east-1.amazonaws.com/dev/fetchblog?id=${blogId}`, config, { withCredentials: true});
-        if(response.data.length > 0 || response.data[0] != null){
-          setBlog(response.data[0]);
+        const response = await axios.get(`http://localhost:4000/v1/api/blog?slug=${slug}`, config);
+        if(response.data.data.length > 0 || response.data.data[0] != null){
+          setBlog(response.data.data[0]);
         }
         
       } catch (error) {
@@ -30,7 +30,7 @@ const BlogDetails = () => {
     };
 
     fetchData();
-  }, [blogId, navigate]);
+  }, [slug, navigate]);
 
   // 
 
@@ -67,12 +67,12 @@ const BlogDetails = () => {
             <Card.Body>
               <Card.Title>{blog.blog_name}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
-                {blog.category} {' '} | {' '}{formatDate(blog.created_on)} {' '} | {' '}
+                {blog.blog_category} {' '} | {' '}{formatDate(blog.createdAt)}{' '} | {' '}
                 <Badge bg="success" className="author-badge">
-                  {blog.author}
+                  {blog.blog_author}
                 </Badge>{' '}
               </Card.Subtitle>
-              <Card.Text>{blog.article}</Card.Text>
+              <Card.Text>{blog.blog_article}</Card.Text>
               <Button variant="primary" onClick={handleBackToList}>
                 Back to Blog List
               </Button>

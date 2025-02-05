@@ -21,10 +21,11 @@ const BlogList = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const user = localStorage.getItem('user');
-        const response = await axios.get(`https://kbri0uc4wj.execute-api.us-east-1.amazonaws.com/dev/fetchblog`, config, { withCredentials: true});
-          if (response.status === 200 && response.data.length > 0) {
-            setBlogs(response.data);
+        //const user = localStorage.getItem('user');
+        const response = await axios.get(`http://localhost:4000/v1/api/blog`, config);
+        console.log('response',response.data.data)
+          if (response.data.status === 200 && response.data.data.length > 0) {
+            setBlogs(response.data.data);
             toast.success('Blogs fetched successfully!');
           } else {
             toast.error('No blogs found!');
@@ -45,18 +46,20 @@ const BlogList = () => {
     setSearchTerm(e.target.value);
   };
 
-console.log('blogs',blogs)
   const filteredBlogs = blogs ? blogs.filter((blog) =>
-    blog.category.toLowerCase().includes(searchTerm.toLowerCase())
+    blog.blog_category.toLowerCase().includes(searchTerm.toLowerCase())
   ) : [];
 
   const truncateText = (text, maxLength) => {
-    if (text.length <= maxLength) {
-      return text;
-    }
-    return `${text.slice(0, maxLength)}...`;
-  };
-  const handleDelete = (blogId) => {
+  if (!text || typeof text !== 'string') {
+    return '';
+  }
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return `${text.slice(0, maxLength)}...`;
+};
+  const handleDelete = (slug) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this blog!',
@@ -70,11 +73,11 @@ console.log('blogs',blogs)
         try {
           const user = localStorage.getItem('user');
         
-          axios.delete(`https://kbri0uc4wj.execute-api.us-east-1.amazonaws.com/dev/deleteblog?id=${blogId}`, config, { withCredentials: true})
+          axios.delete(`http://localhost:4000/v1/api/blog?slug=${slug}`, config, { withCredentials: true})
             .then((response) => {
               if (response.status === 200) {
                 Swal.fire('Deleted!', 'The blog has been deleted.', 'success');
-                setBlogs(blogs.filter((blog) => blog._id !== blogId));
+                setBlogs(blogs.filter((blog) => blog.blog_slug !== slug));
               } else {
                 Swal.fire('Error', 'Failed to delete the blog.', 'error');
               }
@@ -92,8 +95,8 @@ console.log('blogs',blogs)
   };
 
 
-  const handleView = async (blogId) => {
-    navigate(`/blog/${blogId}`);
+  const handleView = async (slug) => {
+    navigate(`/blog/${slug}`);
   };
 
   const formatDate = (dateInput) => {
@@ -141,18 +144,18 @@ console.log('blogs',blogs)
                     <Card.Body>
                       <Card.Title>{truncateText(blog.blog_name, 40)}</Card.Title>
                       <Card.Subtitle className="mb-2 text-muted">
-                        {blog.category}{' '}|{' '}{formatDate(blog.created_on)}
+                        {blog.blog_category}{' '}|{' '}{formatDate(blog.createdAt)}
                       </Card.Subtitle>
-                      <Card.Text>{truncateText(blog.article, 100)}</Card.Text>
+                      <Card.Text>{truncateText(blog.blog_article, 100)}</Card.Text>
                       <div className="blog-actions">
                         <FaEye
-                          className="blog-action-icon" data-test={`blog-view-${blog._id}`}
-                          onClick={() => handleView(blog._id)}
+                          className="blog-action-icon" data-test={`blog-view-${blog.blog_slug}`}
+                          onClick={() => handleView(blog.blog_slug)}
                         />
                         <FaTrashAlt
                           className="blog-action-icon"
-                          data-test={`blog-delete-${blog._id}`}
-                          onClick={() => handleDelete(blog._id)}
+                          data-test={`blog-delete-${blog.blog_slug}`}
+                          onClick={() => handleDelete(blog.blog_slug)}
                         />
                       </div>
                     </Card.Body>
