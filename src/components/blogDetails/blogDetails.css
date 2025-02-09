@@ -37,3 +37,31 @@
   left: "50%";
   transform: "translate(-50%, -50%)"
 }
+
+.blog-detail-container {
+  min-height: 100vh;
+  /* Ensure the container takes the full height of the viewport */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-text {
+  margin-top: 10px;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.blog-article-text {
+  text-align: justify;
+  white-space: pre-line;
+}
+
+.blog-thumbnail {
+  /* /* width: 200px; */
+  height: 500px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}

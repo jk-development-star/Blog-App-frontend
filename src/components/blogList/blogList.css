@@ -52,3 +52,54 @@
   left: "50%";
   transform: "translate(-50%, -50%)"
 }
+
+.blog-detail-container {
+  min-height: 100vh;
+  /* Ensure the container takes the full height of the viewport */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.blog-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.blog-card-link:focus,
+.blog-card-link:hover,
+.blog-card-link:active {
+  text-decoration: none;
+  color: inherit;
+  outline: none; /* Remove the blue outline */
+}
+
+.blog-card-link .card {
+  cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+}
+
+.blog-thumbnail {
+  /* /* width: 200px; */
+  height: 200px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.loading-text {
+  margin-top: 10px;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.loading-text {
+  margin-top: 10px;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.no-blogs-text,
+.error-text {
+  font-size: 1.5em;
+  color: #555;
+}

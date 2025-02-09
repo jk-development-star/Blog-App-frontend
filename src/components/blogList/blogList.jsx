@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Card, Badge, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Form, Card, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FaTrashAlt, FaEye } from 'react-icons/fa';
+import { formatDate,getFullImageUrl  } from '../../constants/constants';
 import './blogList.css';
 import axios from 'axios'
-import { ToastContainer, toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 const BlogList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [error, setError] = useState('');
+const navigate = useNavigate();
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -21,17 +22,12 @@ const BlogList = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        //const user = localStorage.getItem('user');
         const response = await axios.get(`http://localhost:4000/v1/api/blog`, config);
-        console.log('response',response.data.data)
           if (response.data.status === 200 && response.data.data.length > 0) {
             setBlogs(response.data.data);
-            toast.success('Blogs fetched successfully!');
-          } else {
-            toast.error('No blogs found!');
-          }
+          } 
       } catch (error) {
-        toast.error(error)
+        setError('Error fetching blogs');
       } finally {
         setIsLoading(false);
       }
@@ -39,7 +35,48 @@ const BlogList = () => {
 
     fetchData();
   }, []);
-  const navigate = useNavigate();
+
+
+  if (isLoading) {
+    return (
+      <Container fluid className="blog-list-container">
+        <Row className="justify-content-center align-items-center min-vh-100">
+          <Col md={8} className="text-center">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+            <div className="loading-text">Loading...</div>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+
+   if (error) {
+    return (
+      <Container fluid className="blog-list-container">
+        <Row className="justify-content-center align-items-center min-vh-100">
+          <Col md={8} className="text-center">
+            <div className="error-text">{error}</div>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+
+  if (!isLoading && blogs.length === 0) {
+    console.log('blog length', blogs.length)
+    return (
+      <Container fluid className="blog-list-container">
+        <Row className="justify-content-center align-items-center min-vh-100">
+          <Col md={8} className="text-center">
+            <div className="no-blogs-text">No blogs found</div>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
+  
 
 
   const handleSearch = (e) => {
@@ -71,9 +108,7 @@ const BlogList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         try {
-          const user = localStorage.getItem('user');
-        
-          axios.delete(`http://localhost:4000/v1/api/blog?slug=${slug}`, config, { withCredentials: true})
+          axios.delete(`http://localhost:4000/v1/api/blog?slug=${slug}`, config)
             .then((response) => {
               if (response.status === 200) {
                 Swal.fire('Deleted!', 'The blog has been deleted.', 'success');
@@ -94,26 +129,10 @@ const BlogList = () => {
     });
   };
 
-
   const handleView = async (slug) => {
     navigate(`/blog/${slug}`);
   };
 
-  const formatDate = (dateInput) => {
-    const date = new Date(dateInput);
-    if (isNaN(date.getTime())) {
-      return 'Invalid date';
-    }
-
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
-    ];
-    const month = months[date.getMonth()];
-    const day = date.getDate();
-    const year = date.getFullYear();
-    return `${day} ${month}, ${year}`;
-  };
 
   return (
     <Container fluid className="blog-list-container">
@@ -139,34 +158,35 @@ const BlogList = () => {
             </div>
             <Row>
               {filteredBlogs.map((blog) => (
-                <Col md={6} key={blog._id}>
-                  <Card className="mb-4">
-                    <Card.Body>
-                      <Card.Title>{truncateText(blog.blog_name, 40)}</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">
-                        {blog.blog_category}{' '}|{' '}{formatDate(blog.createdAt)}
-                      </Card.Subtitle>
-                      <Card.Text>{truncateText(blog.blog_article, 100)}</Card.Text>
-                      <div className="blog-actions">
-                        <FaEye
-                          className="blog-action-icon" data-test={`blog-view-${blog.blog_slug}`}
-                          onClick={() => handleView(blog.blog_slug)}
-                        />
-                        <FaTrashAlt
-                          className="blog-action-icon"
-                          data-test={`blog-delete-${blog.blog_slug}`}
-                          onClick={() => handleDelete(blog.blog_slug)}
-                        />
-                      </div>
-                    </Card.Body>
-                  </Card>
+                <Col md={4} key={blog._id}>
+                    <Card className="mb-4">
+                      <Card.Img variant="top" src={getFullImageUrl(blog.blog_thumbnail_200)} alt={blog.blog_name} className="blog-thumbnail" />
+                      <Card.Body>
+
+                        <Card.Title>{truncateText(blog.blog_name, 40)}</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">
+                          {blog.blog_category}{' '}|{' '}{formatDate(blog.createdAt)}
+                        </Card.Subtitle>
+                        <Card.Text>{truncateText(blog.blog_article, 100)}</Card.Text>
+                        <div className="blog-actions">
+                          <FaEye
+                            className="blog-action-icon" data-test={`blog-view-${blog.blog_slug}`}
+                            onClick={() => handleView(blog.blog_slug)}
+                          />
+                          <FaTrashAlt
+                            className="blog-action-icon"
+                            data-test={`blog-delete-${blog.blog_slug}`}
+                            onClick={() => handleDelete(blog.blog_slug)}
+                          />
+                        </div>
+                      </Card.Body>
+                    </Card>
                 </Col>
               ))}
             </Row>
           </Col>
         </Row>
       )}
-      <ToastContainer />
     </Container>
   );
 };

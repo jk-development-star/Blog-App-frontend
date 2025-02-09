@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Badge, Button } from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Card, Badge, Button, Spinner } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { formatDate, getFullImageUrl } from '../../constants/constants';
 import './blogDetails.css';
 import axios from 'axios';
 
-const BlogDetails = () => {
+const BlogDetails = ({slug}) => {
   const [blog, setBlog] = useState("");
-  const { slug } = useParams();
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const config = {
     headers: {
@@ -27,44 +28,41 @@ const BlogDetails = () => {
           navigate('/');
         }
       }
+      finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
-  }, [slug, navigate]);
-
-  // 
-
-
-
-  const formatDate = (dateInput) => {
-    const date = new Date(dateInput); // Convert the input to a Date object
-
-    if (isNaN(date.getTime())) {
-      // Handle invalid date input
-      return 'Invalid date';
-    }
-
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
-    ];
-    const month = months[date.getMonth()];
-    const day = date.getDate();
-    const year = date.getFullYear();
-    return `${day} ${month}, ${year}`;
-  };
-
+  }, [slug]);
 
   const handleBackToList = () => {
     navigate('/blog-list');
   };
 
+  if (loading) {
+  return (
+    <Container fluid className="blog-detail-container">
+      <Row className="justify-content-center align-items-center min-vh-100">
+        <Col md={8} className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+          <div className="loading-text">Loading...</div>
+        </Col>
+      </Row>
+    </Container>
+  );
+}
+
   return (
     <Container fluid className="blog-detail-container">
       <Row className="justify-content-center">
         <Col md={8}>
+        
           <Card className="blog-detail-card">
             <Card.Body>
+              <Card.Img variant="top" src={getFullImageUrl(blog.blog_image)} alt={blog.blog_name} className="blog-thumbnail" />
               <Card.Title>{blog.blog_name}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
                 {blog.blog_category} {' '} | {' '}{formatDate(blog.createdAt)}{' '} | {' '}
@@ -72,7 +70,7 @@ const BlogDetails = () => {
                   {blog.blog_author}
                 </Badge>{' '}
               </Card.Subtitle>
-              <Card.Text>{blog.blog_article}</Card.Text>
+              <Card.Text className='blog-article-text'>{blog.blog_article}</Card.Text>
               <Button variant="primary" onClick={handleBackToList}>
                 Back to Blog List
               </Button>
