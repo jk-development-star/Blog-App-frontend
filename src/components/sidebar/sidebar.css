@@ -1,0 +1,238 @@
+/* src/components/sidebar/Sidebar.css */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    background: #343a40;
+    width: 60px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.open {
+    width: 250px;
+}
+
+/* Brand Section Styles */
+.sidebar-brand {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-title {
+    display: flex;
+    align-items: center;
+    color: white;
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.brand-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.brand-text {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar.open .brand-text {
+    opacity: 1;
+}
+
+/* Profile Section Styles */
+.profile-section {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.open .profile-info {
+    opacity: 1;
+}
+
+.profile-name {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.profile-role {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Menu Styles */
+.menu {
+    flex: 1;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.menu-item {
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+}
+
+.menu-icon {
+    font-size: 1.2rem;
+    min-width: 20px;
+}
+
+.menu-text {
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar.open .menu-text {
+    opacity: 1;
+}
+
+/* Footer Section Styles */
+.sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 0;
+}
+
+/* Toggle Button Styles */
+.toggle-btn {
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Content Area Styles */
+.content {
+    margin-left: 60px;
+    transition: margin-left 0.3s ease;
+    width: calc(100% - 60px);
+    padding: 20px;
+}
+
+.content.shifted {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
+
+/* Floating Toggle Button Styles */
+.floating-toggle-btn {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 1000;
+    background: #343a40;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.floating-toggle-btn:hover {
+    transform: scale(1.1);
+    background-color: #4a4a4a;
+}
+
+.floating-toggle-btn:focus {
+    outline: none;
+}
+
+/* Update existing toggle button styles */
+.toggle-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.toggle-btn:hover {
+    transform: scale(1.1);
+}
+
+.toggle-btn:focus {
+    outline: none;
+}
+
+/* Ensure content doesn't overlap with floating button when sidebar is closed */
+.content:not(.shifted) {
+    padding-left: 60px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0;
+    }
+
+    .sidebar.open {
+        width: 200px;
+    }
+
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .content.shifted {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+}

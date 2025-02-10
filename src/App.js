@@ -4,18 +4,17 @@ import Login from './components/loginForm/login';
 import BlogList from './components/blogList/blogList';
 import BlogDetails from './components/blogDetails/blogDetails';
 import Header from './components/header/header';
+import AdminDashboard from './components/dashboard/dashboard';
 import PrivateRoute from './ProtectedRoute';
 
 const App = () => {
   return (
     <Router>
-      <Header />
       <Routes>
         <Route exact path="/" element={<Login />} />
-
+        <Route path="/dashboard" element={<AdminDashboard />} />
         <Route path="/blog-list" element={<BlogList />} />
         <Route exact path="/blog/:slug" element={<BlogDetails />} />
-
       </Routes>
     </Router>
   );

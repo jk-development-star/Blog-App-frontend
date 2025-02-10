@@ -57,7 +57,7 @@
   white-space: pre-line;
 }
 
-.blog-thumbnail {
+.blog-thumbnail-details {
   /* /* width: 200px; */
   height: 500px;
   object-fit: cover;

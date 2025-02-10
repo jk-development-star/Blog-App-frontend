@@ -18,3 +18,8 @@ export function getFullImageUrl(imagePath) {
     const baseUrl = 'http://localhost:4000/'; // Replace with your actual base URL
     return `${baseUrl}${imagePath}`;
 };
+
+export function truncateText(text, maxLength) {
+    if (text.length <= maxLength) return text;
+    return `${text.substring(0, maxLength)}...`;
+};
