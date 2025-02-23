@@ -73,6 +73,12 @@
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
+.btn-primary {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .action-buttons {

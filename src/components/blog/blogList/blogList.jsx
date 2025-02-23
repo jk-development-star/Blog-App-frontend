@@ -7,15 +7,16 @@ import {
   Table,
   Spinner,
   Badge,
+  Button,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { FaTrashAlt, FaEye, FaEdit } from "react-icons/fa";
-import { formatDate } from "../../constants/constants";
-import Sidebar from "../sidebar/sidebar";
+import { formatDate } from "../../../constants/constants";
+import Sidebar from "../../common/sidebar/sidebar";
 import "./blogList.css";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { truncateText } from "../../constants/constants";
+import { truncateText } from "../../../constants/constants";
 
 const BlogList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -157,6 +158,11 @@ const BlogList = () => {
                 onChange={handleSearch}
               />
             </Form.Group>
+          </Col>
+          <Col md={6} className="text-end">
+            <Button variant="primary" onClick={() => navigate("/add-blog")}>
+              Add New Blog
+            </Button>
           </Col>
         </Row>
 

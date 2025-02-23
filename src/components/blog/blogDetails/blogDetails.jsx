@@ -9,8 +9,8 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { formatDate, getFullImageUrl } from "../../constants/constants";
-import Sidebar from "../sidebar/sidebar";
+import { formatDate, getFullImageUrl } from "../../../constants/constants";
+import Sidebar from "../../common/sidebar/sidebar";
 import "./blogDetails.css";
 import axios from "axios";
 
